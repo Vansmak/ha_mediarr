@@ -1,0 +1,1 @@
+"""The Sonarr Media integration."""
