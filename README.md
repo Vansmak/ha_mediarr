@@ -29,15 +29,27 @@ A comprehensive media management card and integration for Home Assistant that br
 
 ## Installation
 
-### HACS (Recommended)
-1. Add this repository to HACS
-2. Install "Mediarr" from HACS
-3. Restart Home Assistant
+### HACS Installation
+1. Open HACS
+2. Go to "Integrations"
+3. Click the three dots menu and select "Custom repositories"
+4. Add this repository URL and select "Integration" as the category
+5. Click "Add"
+6. Find and install "Mediarr" from HACS
+7. Restart Home Assistant
+8. Add to Resources:
+   - Go to Settings -> Dashboards -> Resources
+   - Click "Add Resource"
+   - Enter URL: `/hacsfiles/ha-mediarr/mediarr-card.js`
+   - Select "JavaScript Module"
+   - Click "Create"
+
 
 ### Manual Installation
-1. Copy the `custom_components/mediarr` folder to your Home Assistant configuration directory
-2. Copy `www/community/mediarr-card/mediarr-card.js` to your HA `www` folder
-3. Restart Home Assistant
+1. Download the latest release
+2. Copy all contents from `custom_components/mediarr/` to `/config/custom_components/mediarr/`
+3. Copy `www/community/mediarr-card/mediarr-card.js` to `/config/www/community/mediarr-card/`
+4. Restart Home Assistant
 
 ## Configuration
 
