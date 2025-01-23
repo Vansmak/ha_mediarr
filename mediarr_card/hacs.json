@@ -1,5 +1,6 @@
 {
   "name": "Mediarr Card",
+  "category": "dashboard",
   "render_readme": true,
   "frontend_version": "2024.1.0",
   "homeassistant": "2024.1.0",
