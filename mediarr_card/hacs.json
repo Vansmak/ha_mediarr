@@ -5,5 +5,5 @@
   "frontend_version": "2024.1.0",
   "homeassistant": "2024.1.0",
   "filename": "mediarr-card.js",
-  "content_in_root": true
+  "content_in_root": false
 }
