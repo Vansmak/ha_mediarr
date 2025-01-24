@@ -813,14 +813,20 @@ const style = document.createElement('style');
           case 'trakt':
             entity = traktEntity;
             mediaItem = entity.attributes.data[index];
+            
+            if (mediaItem?.fanart) {
+              this.background.style.backgroundImage = `url('${mediaItem.fanart}')`;
+              this.background.style.opacity = config.opacity || 0.7;
+            }
+            
             this.info.innerHTML = `
-                <div class="title">${mediaItem.title}${mediaItem.year ? ` (${mediaItem.year})` : ''}</div>
-                <div class="details">${mediaItem.type.charAt(0).toUpperCase() + mediaItem.type.slice(1)}</div>
-                <div class="metadata">
-                  ${mediaItem.ids?.imdb ? `IMDB: ${mediaItem.ids.imdb}` : ''}
-                  ${mediaItem.ids?.tmdb ? ` | TMDB: ${mediaItem.ids.tmdb}` : ''}
-                </div>
-              `;
+              <div class="title">${mediaItem.title}${mediaItem.year ? ` (${mediaItem.year})` : ''}</div>
+              <div class="details">${mediaItem.type.charAt(0).toUpperCase() + mediaItem.type.slice(1)}</div>
+              <div class="metadata">
+                ${mediaItem.ids?.imdb ? `IMDB: ${mediaItem.ids.imdb}` : ''}
+                ${mediaItem.ids?.tmdb ? ` | TMDB: ${mediaItem.ids.tmdb}` : ''}
+              </div>
+            `;
             break;
             case 'tmdb':
               entity = tmdbEntity;
