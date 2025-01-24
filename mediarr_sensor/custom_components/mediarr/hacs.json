@@ -1,8 +1,0 @@
-{
-  "name": "Mediarr",
-  "render_readme": true,
-  "category": "integration",
-  "domains": ["sensor"],
-  "country": "ALL",
-  "homeassistant": "2024.1.0"
-}
