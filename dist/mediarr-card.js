@@ -814,8 +814,8 @@ const style = document.createElement('style');
             entity = traktEntity;
             mediaItem = entity.attributes.data[index];
             
-            if (mediaItem?.fanart) {
-              this.background.style.backgroundImage = `url('${mediaItem.fanart}')`;
+            if (mediaItem?.backdrop) {
+              this.background.style.backgroundImage = `url('${mediaItem.backdrop}')`;
               this.background.style.opacity = config.opacity || 0.7;
             }
             
@@ -827,7 +827,6 @@ const style = document.createElement('style');
                 ${mediaItem.ids?.tmdb ? ` | TMDB: ${mediaItem.ids.tmdb}` : ''}
               </div>
             `;
-            break;
             break;
             case 'tmdb':
               entity = tmdbEntity;
