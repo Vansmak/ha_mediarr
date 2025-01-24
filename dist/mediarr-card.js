@@ -828,6 +828,7 @@ const style = document.createElement('style');
               </div>
             `;
             break;
+            break;
             case 'tmdb':
               entity = tmdbEntity;
               mediaItem = entity.attributes.data[index];
