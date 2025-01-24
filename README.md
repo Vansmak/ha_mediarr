@@ -33,14 +33,14 @@ A comprehensive media management card and integration for Home Assistant that br
 1. Open HACS
 2. Go to "Integrations"
 3. Click the three dots menu and select "Custom repositories"
-4. Add this repository URL and select "Integration" as the category
+4. Add this repository URL and select "Dashboard" as the category
 5. Click "Add"
-6. Find and install "Mediarr" from HACS
+6. Find and install "Mediarr-card" from HACS
 7. Restart Home Assistant
 8. Add to Resources:
    - Go to Settings -> Dashboards -> Resources
    - Click "Add Resource"
-   - Enter URL: `/hacsfiles/ha-mediarr/mediarr-card.js`
+   - Enter URL: `/hacsfiles/mediarr-card/mediarr-card.js`
    - Select "JavaScript Module"
    - Click "Create"
 
@@ -53,7 +53,8 @@ A comprehensive media management card and integration for Home Assistant that br
 
 ## Configuration
 
-### Step 1: Configure Sensors
+### Step 1: requires mediarr from https://github.com/Vansmak/mediarr_server/
+***Configure Sensors
 Add one or more of the following sensors to your `configuration.yaml`:
 
 ```yaml
@@ -88,14 +89,9 @@ sensor:
       trending_type: all  # Options: movie, tv, all
       max_items: 10
 ```
-### Step 2: Add to Resources
-1. Go to Settings -> Dashboards -> Resources
-2. Click "Add Resource"
-3. Enter URL: `/hacsfiles/ha-mediarr/mediarr-card.js`
-4. Select "JavaScript Module"
-5. Click "Create"
+
    
-### Step 3: Add the Card
+### Step 2: Add the Card
 Add the card to your dashboard:  (may need to clear cache)
 
 ```yaml
