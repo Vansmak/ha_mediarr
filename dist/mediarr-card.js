@@ -813,6 +813,10 @@ const style = document.createElement('style');
           case 'trakt':
             entity = traktEntity;
             mediaItem = entity.attributes.data[index];
+            if (mediaItem?.backdrop) {
+              this.background.style.backgroundImage = `url('${mediaItem.backdrop}')`;
+              this.background.style.opacity = config.opacity || 0.7;
+            }
             this.info.innerHTML = `
                 <div class="title">${mediaItem.title}${mediaItem.year ? ` (${mediaItem.year})` : ''}</div>
                 <div class="details">${mediaItem.type.charAt(0).toUpperCase() + mediaItem.type.slice(1)}</div>
@@ -822,7 +826,7 @@ const style = document.createElement('style');
                 </div>
               `;
             break;
-            case 'tmdb':
+          case 'tmdb':
               entity = tmdbEntity;
               mediaItem = entity.attributes.data[index];
               
@@ -841,7 +845,7 @@ const style = document.createElement('style');
                 ${mediaItem.overview ? `<div class="overview" style="margin-top: 8px; font-size: 0.9em; opacity: 0.9;">${mediaItem.overview}</div>` : ''}
               `;
               break;
-           }
+        }
         // Update background and info
         if (mediaItem?.fanart) {
           this.background.style.backgroundImage = `url('${mediaItem.fanart}')`;
@@ -950,3 +954,4 @@ window.customCards.push({
   description: "A card for displaying Plex, Sonarr, and Radarr media",
   preview: true
 });
+
