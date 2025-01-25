@@ -193,16 +193,37 @@ _getClientIcon(product) {
     return productMap[product] || 'mdi:play-network';
   }
   _setSectionOrder(config) {
+    const traktKeys = [
+      'trakt_trending_entity', 
+      'trakt_anticipated_entity', 
+      'trakt_played_entity', 
+      'trakt_watched_entity', 
+      'trakt_popular_entity'
+    ];
+
+    const tmdbKeys = [
+      'tmdb_trending_entity', 
+      'tmdb_now_playing_entity', 
+      'tmdb_upcoming_entity', 
+      'tmdb_on_air_entity', 
+      'tmdb_airing_today_entity'
+    ];
+
     this.sectionOrder = Object.keys(config).filter(key => 
-      ['plex_entity', 'sonarr_entity', 'radarr_entity', 'trakt_entity', 'tmdb_entity'].includes(key)
+      [
+        'plex_entity', 
+        'sonarr_entity', 
+        'radarr_entity', 
+        ...traktKeys, 
+        ...tmdbKeys
+      ].includes(key)
     );
   }
 
-set hass(hass) {
+  set hass(hass) {
     if (!this.content) {
       this._setSectionOrder(this.config);
       
-      // Create base template with dynamic sections
       const sectionTemplates = {
         plex_entity: `
           <div class="section-header">
@@ -222,17 +243,65 @@ set hass(hass) {
           </div>
           <div class="movie-list"></div>
         `,
-        trakt_entity: `
+        trakt_trending_entity: `
           <div class="section-header">
-            <div class="section-label">Popular on Trakt</div>
+            <div class="section-label">Trakt Trending</div>
           </div>
-          <div class="trakt-list"></div>
+          <div class="trakt-trending-list"></div>
         `,
-        tmdb_entity: `
+        trakt_anticipated_entity: `
           <div class="section-header">
-            <div class="section-label">Trending on TMDB</div>
+            <div class="section-label">Trakt Anticipated</div>
           </div>
-          <div class="tmdb-list"></div>
+          <div class="trakt-anticipated-list"></div>
+        `,
+        trakt_played_entity: `
+          <div class="section-header">
+            <div class="section-label">Trakt Most Played</div>
+          </div>
+          <div class="trakt-played-list"></div>
+        `,
+        trakt_watched_entity: `
+          <div class="section-header">
+            <div class="section-label">Trakt Most Watched</div>
+          </div>
+          <div class="trakt-watched-list"></div>
+        `,
+        trakt_popular_entity: `
+          <div class="section-header">
+            <div class="section-label">Trakt Popular</div>
+          </div>
+          <div class="trakt-popular-list"></div>
+        `,
+        tmdb_trending_entity: `
+          <div class="section-header">
+            <div class="section-label">TMDB Trending</div>
+          </div>
+          <div class="tmdb-trending-list"></div>
+        `,
+        tmdb_now_playing_entity: `
+          <div class="section-header">
+            <div class="section-label">TMDB Now Playing</div>
+          </div>
+          <div class="tmdb-now-playing-list"></div>
+        `,
+        tmdb_upcoming_entity: `
+          <div class="section-header">
+            <div class="section-label">TMDB Upcoming</div>
+          </div>
+          <div class="tmdb-upcoming-list"></div>
+        `,
+        tmdb_on_air_entity: `
+          <div class="section-header">
+            <div class="section-label">TMDB On Air</div>
+          </div>
+          <div class="tmdb-on-air-list"></div>
+        `,
+        tmdb_airing_today_entity: `
+          <div class="section-header">
+            <div class="section-label">TMDB Airing Today</div>
+          </div>
+          <div class="tmdb-airing-today-list"></div>
         `
       };
 
@@ -293,7 +362,16 @@ set hass(hass) {
       this.nowPlayingTitle = this.querySelector('.now-playing-title');
       this.nowPlayingSubtitle = this.querySelector('.now-playing-subtitle');
       this.progressBar = this.querySelector('.progress-bar-fill');
-      
+      this.traktTrendingList = this.querySelector('.trakt-trending-list');
+      this.traktAnticipatedList = this.querySelector('.trakt-anticipated-list');
+      this.traktPlayedList = this.querySelector('.trakt-played-list');
+      this.traktWatchedList = this.querySelector('.trakt-watched-list');
+      this.traktPopularList = this.querySelector('.trakt-popular-list');
+      this.tmdbTrendingList = this.querySelector('.tmdb-trending-list');
+      this.tmdbNowPlayingList = this.querySelector('.tmdb-now-playing-list');
+      this.tmdbUpcomingList = this.querySelector('.tmdb-upcoming-list');
+      this.tmdbOnAirList = this.querySelector('.tmdb-on-air-list');
+      this.tmdbAiringTodayList = this.querySelector('.tmdb-airing-today-list');
       
       // Set up progress bar update interval
       this.progressInterval = setInterval(() => {
@@ -430,6 +508,23 @@ const style = document.createElement('style');
           text-transform: uppercase;
         }
         .show-list, .movie-list, .plex-list, .trakt-list, .tmdb-list {
+          padding: 0 8px;
+          display: flex;
+          gap: 6px;
+          overflow-x: auto;
+          scrollbar-width: thin;
+          margin-bottom: 8px;
+        }
+        .trakt-trending-list, 
+        .trakt-anticipated-list, 
+        .trakt-played-list, 
+        .trakt-watched-list, 
+        .trakt-popular-list,
+        .tmdb-trending-list,
+        .tmdb-now-playing-list,
+        .tmdb-upcoming-list,
+        .tmdb-on-air-list,
+        .tmdb-airing-today-list {
           padding: 0 8px;
           display: flex;
           gap: 6px;
@@ -685,6 +780,55 @@ const style = document.createElement('style');
     }
 
     const config = this.config;
+
+     // Update Trakt lists
+     const traktLists = [
+      { key: 'trakt_trending_entity', list: this.traktTrendingList },
+      { key: 'trakt_anticipated_entity', list: this.traktAnticipatedList },
+      { key: 'trakt_played_entity', list: this.traktPlayedList },
+      { key: 'trakt_watched_entity', list: this.traktWatchedList },
+      { key: 'trakt_popular_entity', list: this.traktPopularList }
+    ];
+
+    traktLists.forEach(({ key, list }) => {
+      const entity = hass.states[config[key]];
+      if (entity) {
+        const items = entity.attributes.data?.slice(0, 10) || [];
+        list.innerHTML = items.map((item, index) => `
+          <div class="media-item ${this.selectedType === key && index === this.selectedIndex ? 'selected' : ''}"
+               data-type="${key}"
+               data-index="${index}">
+            <img src="${item.poster || '/api/placeholder/400/600'}" alt="${item.title}">
+            <div class="media-item-title">${item.title}</div>
+          </div>
+        `).join('');
+      }
+    });
+
+    // Update TMDB lists
+    const tmdbLists = [
+      { key: 'tmdb_trending_entity', list: this.tmdbTrendingList },
+      { key: 'tmdb_now_playing_entity', list: this.tmdbNowPlayingList },
+      { key: 'tmdb_upcoming_entity', list: this.tmdbUpcomingList },
+      { key: 'tmdb_on_air_entity', list: this.tmdbOnAirList },
+      { key: 'tmdb_airing_today_entity', list: this.tmdbAiringTodayList }
+    ];
+
+    tmdbLists.forEach(({ key, list }) => {
+      const entity = hass.states[config[key]];
+      if (entity) {
+        const items = entity.attributes.data || [];
+        list.innerHTML = items.map((item, index) => `
+          <div class="media-item ${this.selectedType === key && index === this.selectedIndex ? 'selected' : ''}"
+               data-type="${key}"
+               data-index="${index}">
+            <img src="${item.poster || '/api/placeholder/400/600'}" alt="${item.title}">
+            <div class="media-item-title">${item.title}</div>
+          </div>
+        `).join('');
+      }
+    });
+
     // Update Now Playing section if media player is active
     if (this.config.media_player_entity) {
       const entity = hass.states[this.config.media_player_entity];
@@ -810,44 +954,54 @@ const style = document.createElement('style');
             entity = radarrEntity;
             mediaItem = entity.attributes.data[index];
             break;
-          case 'trakt':
-            entity = traktEntity;
+          case 'trakt_trending_entity':
+          case 'trakt_anticipated_entity':
+          case 'trakt_played_entity':
+          case 'trakt_watched_entity':
+          case 'trakt_popular_entity':
+            entity = hass.states[config[type]];
             mediaItem = entity.attributes.data[index];
-            
-            if (mediaItem?.backdrop) {
-              this.background.style.backgroundImage = `url('${mediaItem.backdrop}')`;
-              this.background.style.opacity = config.opacity || 0.7;
-            }
-            
-            this.info.innerHTML = `
-              <div class="title">${mediaItem.title}${mediaItem.year ? ` (${mediaItem.year})` : ''}</div>
-              <div class="details">${mediaItem.type.charAt(0).toUpperCase() + mediaItem.type.slice(1)}</div>
-              <div class="metadata">
-                ${mediaItem.ids?.imdb ? `IMDB: ${mediaItem.ids.imdb}` : ''}
-                ${mediaItem.ids?.tmdb ? ` | TMDB: ${mediaItem.ids.tmdb}` : ''}
-              </div>
-            `;
-            break;
-            case 'tmdb':
-              entity = tmdbEntity;
-              mediaItem = entity.attributes.data[index];
+                
+                // Add backdrop or poster image update
+                if (mediaItem?.fanart || mediaItem?.poster) {
+                  this.background.style.backgroundImage = `url('${mediaItem.fanart || mediaItem.poster}')`;
+                  this.background.style.opacity = config.opacity || 0.7;
+                }
               
-              if (mediaItem?.backdrop) {
-                this.background.style.backgroundImage = `url('${mediaItem.backdrop}')`;
-                this.background.style.opacity = config.opacity || 0.7;
-              }
-              
-              this.info.innerHTML = `
-                <div class="title">${mediaItem.title}${mediaItem.year ? ` (${mediaItem.year})` : ''}</div>
-                <div class="details">${mediaItem.type === 'movie' ? 'Movie' : 'TV Show'}</div>
-                <div class="metadata">
-                  ${mediaItem.vote_average ? `Rating: ${mediaItem.vote_average}/10` : ''}
-                  ${mediaItem.popularity ? ` | Popularity: ${Math.round(mediaItem.popularity)}` : ''}
-                </div>
-                ${mediaItem.overview ? `<div class="overview" style="margin-top: 8px; font-size: 0.9em; opacity: 0.9;">${mediaItem.overview}</div>` : ''}
-              `;
+                this.info.innerHTML = `
+                  <div class="title">${mediaItem.title}${mediaItem.year ? ` (${mediaItem.year})` : ''}</div>
+                  <div class="details">${mediaItem.type.charAt(0).toUpperCase() + mediaItem.type.slice(1)}</div>
+                  <div class="metadata">
+                    ${mediaItem.ids?.imdb ? `IMDB: ${mediaItem.ids.imdb}` : ''}
+                    ${mediaItem.ids?.tmdb ? ` | TMDB: ${mediaItem.ids.tmdb}` : ''}
+                  </div>
+             `;
               break;
-           }
+              
+          case 'tmdb_trending_entity':
+          case 'tmdb_now_playing_entity':
+          case 'tmdb_upcoming_entity':
+          case 'tmdb_on_air_entity':
+          case 'tmdb_airing_today_entity':
+            entity = hass.states[config[type]];
+            mediaItem = entity.attributes.data[index];
+                
+                if (mediaItem?.backdrop) {
+                  this.background.style.backgroundImage = `url('${mediaItem.backdrop}')`;
+                  this.background.style.opacity = config.opacity || 0.7;
+                }
+                
+                this.info.innerHTML = `
+                  <div class="title">${mediaItem.title}${mediaItem.year ? ` (${mediaItem.year})` : ''}</div>
+                  <div class="details">${mediaItem.type === 'movie' ? 'Movie' : 'TV Show'}</div>
+                  <div class="metadata">
+                    ${mediaItem.vote_average ? `Rating: ${mediaItem.vote_average}/10` : ''}
+                    ${mediaItem.popularity ? ` | Popularity: ${Math.round(mediaItem.popularity)}` : ''}
+                  </div>
+                  ${mediaItem.overview ? `<div class="overview" style="margin-top: 8px; font-size: 0.9em; opacity: 0.9;">${mediaItem.overview}</div>` : ''}
+                `;
+                break;
+            }
         // Update background and info
         if (mediaItem?.fanart) {
           this.background.style.backgroundImage = `url('${mediaItem.fanart}')`;
@@ -908,9 +1062,9 @@ const style = document.createElement('style');
 
   setConfig(config) {
     if (!config.sonarr_entity && !config.radarr_entity && !config.plex_entity && 
-      !config.trakt_entity && !config.tmdb_entity) {
-    throw new Error('Please define at least one of sonarr_entity, radarr_entity, plex_entity, trakt_entity, or tmdb_entity');
-  }
+        !Object.keys(config).some(key => key.startsWith('trakt_') || key.startsWith('tmdb_'))) {
+      throw new Error('Please define at least one media entity');
+    }
     
     // Store the config
     this.config = { ...config };
@@ -929,8 +1083,9 @@ const style = document.createElement('style');
       plex_entity: 'sensor.plex_mediarr',
       sonarr_entity: 'sensor.sonarr_mediarr',
       radarr_entity: 'sensor.radarr_mediarr',
-      trakt_entity: 'sensor.trakt_mediarr',
-      tmdb_entity: 'sensor.tmdb_mediarr',
+      trakt_trending_entity: 'sensor.trakt_mediarr_trending',
+      trakt_anticipated_entity: 'sensor.trakt_mediarr_anticipated',
+      tmdb_trending_entity: 'sensor.tmdb_mediarr_trending',
       media_player_entity: '',
       plex_url: '',
       plex_token: '',
