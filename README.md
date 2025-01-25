@@ -55,7 +55,7 @@ A comprehensive media management card and integration for Home Assistant that br
 
 ### Step 1: requires mediarr from https://github.com/Vansmak/mediarr_server/
 ***Configure Sensors
-Add one or more of the following sensors to your `configuration.yaml`:
+Add one or more of the following sensors to your `configuration.yaml` `sensors.yaml`:
 
 ```yaml
 sensor:
@@ -76,18 +76,28 @@ sensor:
       url: http://localhost:7878
       api_key: your_radarr_api_key
       max_items: 10
-
+    
     trakt:  # Optional
       client_id: "your_client_id"
       client_secret: "your_client_secret"
       tmdb_api_key: "your_tmdb_api_key"  # Required for posters
       trending_type: both  # Options: movies, shows, both
       max_items: 10
-
+      trending: true      # Default endpoint
+      anticipated: true   # Optional
+      played: true        # Optional
+      watched: true       # Optional 
+      popular: true       # Optional
+    
     tmdb:  # Optional
       api_key: "your_api_key"
       trending_type: all  # Options: movie, tv, all
       max_items: 10
+      trending: true          # Default endpoint
+      now_playing: true       # Optional
+      upcoming: true          # Optional
+      on_air: true            # Optional
+      airing_today: false     # Optional
 ```
 
    
@@ -99,11 +109,21 @@ type: custom:mediarr-card
 plex_entity: sensor.plex_mediarr
 sonarr_entity: sensor.sonarr_mediarr
 radarr_entity: sensor.radarr_mediarr
-trakt_entity: sensor.trakt_mediarr
-tmdb_entity: sensor.tmdb_mediarr
-media_player_entity: media_player.your_plex_player  # Optional
+# Granular Trakt lists (Optional)
+trakt_trending_entity: sensor.trakt_mediarr_trending
+trakt_anticipated_entity: sensor.trakt_mediarr_anticipated
+trakt_played_entity: sensor.trakt_mediarr_played
+trakt_watched_entity: sensor.trakt_mediarr_watched
+trakt_popular_entity: sensor.trakt_mediarr_popular
+# Granular TMDB lists (Optional)
+tmdb_trending_entity: sensor.tmdb_mediarr_trending
+tmdb_now_playing_entity: sensor.tmdb_mediarr_now_playing
+tmdb_upcoming_entity: sensor.tmdb_mediarr_upcoming
+tmdb_on_air_entity: sensor.tmdb_mediarr_on_air
+# Optional media player for progress tracking
+media_player_entity: media_player.your_plex_player
 ```
-
+Note: Not all endpoints may be functional depending on the current implementation of the Mediarr server. Always check the latest documentation and server capabilities.
 ## Options
 
 ### Sensor Configuration
