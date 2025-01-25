@@ -83,11 +83,7 @@ sensor:
       tmdb_api_key: "your_tmdb_api_key"  # Required for posters
       trending_type: both  # Options: movies, shows, both
       max_items: 10
-      trending: true      # Default endpoint
-      anticipated: true   # Optional
-      played: true        # Optional
-      watched: true       # Optional 
-      popular: true       # Optional
+     
     
     tmdb:  # Optional
       api_key: "your_api_key"
