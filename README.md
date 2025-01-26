@@ -105,14 +105,11 @@ type: custom:mediarr-card
 plex_entity: sensor.plex_mediarr
 sonarr_entity: sensor.sonarr_mediarr
 radarr_entity: sensor.radarr_mediarr
-# Granular Trakt lists (Optional)
-trakt_trending_entity: sensor.trakt_mediarr_trending
-trakt_anticipated_entity: sensor.trakt_mediarr_anticipated
-trakt_played_entity: sensor.trakt_mediarr_played
-trakt_watched_entity: sensor.trakt_mediarr_watched
-trakt_popular_entity: sensor.trakt_mediarr_popular
+
+trakt_entity: sensor.trakt_mediarr
+tmdb_entity: sensor.tmdb_mediarr
+
 # Granular TMDB lists (Optional)
-tmdb_trending_entity: sensor.tmdb_mediarr_trending
 tmdb_now_playing_entity: sensor.tmdb_mediarr_now_playing
 tmdb_upcoming_entity: sensor.tmdb_mediarr_upcoming
 tmdb_on_air_entity: sensor.tmdb_mediarr_on_air
