@@ -1,0 +1,11 @@
+{
+  "type": "module",
+  "version": "1.0-initial",
+  "author": "vansmak",
+  "name": "Mediarr Card",
+  "description": "A comprehensive media management card for Home Assistant",
+  "url": "https://github.com/vansmak/mediarr-card",
+  "dependencies": [
+    "vansmak/mediarr-sensor"
+  ]
+}
