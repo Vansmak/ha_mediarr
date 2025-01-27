@@ -800,18 +800,7 @@ class MediarrCard extends HTMLElement {
     }
   
     setConfig(config) {
-      const requiredKeys = [
-        'tmdb_entity',
-        'tmdb_airing_today_entity',
-        'tmdb_now_playing_entity',
-        'tmdb_on_air_entity',
-        'tmdb_upcoming_entity'
-      ];
-  
-      if (!requiredKeys.some(key => config[key])) {
-        throw new Error('Please define at least one TMDB entity');
-      }
-      
+            
       this.config = { ...config };
       this._setSectionOrder(config);
       
