@@ -21,6 +21,11 @@ class MediarrCard extends HTMLElement {
         if (plexToken) {
           return `${url}${url.includes('?') ? '&' : '?'}X-Plex-Token=${plexToken}`;
         }
+      } else if (entityType === 'jellyfin' && !url.includes('X-MediaBrowser-Token')) {
+        const jellyfinToken = this.config.jellyfin_token;
+        if (jellyfinToken) {
+          return `${url}${url.includes('?') ? '&' : '?'}X-MediaBrowser-Token=${jellyfinToken}`;
+        }
       }
       return url;
     }
@@ -137,7 +142,7 @@ class MediarrCard extends HTMLElement {
 
   _setSectionOrder(config) {
     this.sectionOrder = Object.keys(config).filter(key => 
-      ['plex_entity', 'sonarr_entity', 'radarr_entity', 'trakt_entity', 'tmdb_entity',
+      ['plex_entity', 'jellyfin_entity', 'sonarr_entity', 'radarr_entity', 'trakt_entity', 'tmdb_entity',
        'tmdb_airing_today_entity', 'tmdb_now_playing_entity', 'tmdb_on_air_entity', 
        'tmdb_upcoming_entity'].includes(key)
     );
@@ -150,9 +155,15 @@ class MediarrCard extends HTMLElement {
       const sectionTemplates = {
         plex_entity: `
           <div class="section-header">
-            <div class="section-label">Recently Added</div>
+            <div class="section-label">Plex Recently Added</div>
           </div>
           <div class="plex-list"></div>
+        `,
+        jellyfin_entity: `
+          <div class="section-header">
+            <div class="section-label">Jellyfin Recently Added</div>
+          </div>
+          <div class="jellyfin-list"></div>
         `,
         sonarr_entity: `
           <div class="section-header">
@@ -231,6 +242,7 @@ class MediarrCard extends HTMLElement {
       this.background = this.querySelector('.media-background');
       this.info = this.querySelector('.media-info');
       this.plexList = this.querySelector('.plex-list');
+      this.jellyfinList = this.querySelector('.jellyfin-list');
       this.showList = this.querySelector('.show-list');
       this.movieList = this.querySelector('.movie-list');
       this.traktList = this.querySelector('.trakt-list');
@@ -377,6 +389,7 @@ class MediarrCard extends HTMLElement {
         .show-list,
         .movie-list,
         .plex-list,
+        .jellyfin-list,
         .trakt-list,
         .tmdb-list,
         .tmdb-airing-today-list,
@@ -456,6 +469,7 @@ class MediarrCard extends HTMLElement {
         .show-list::-webkit-scrollbar,
         .movie-list::-webkit-scrollbar,
         .plex-list::-webkit-scrollbar,
+        .jellyfin-list::-webkit-scrollbar,
         .trakt-list::-webkit-scrollbar,
         .tmdb-list::-webkit-scrollbar,
         .tmdb-airing-today-list::-webkit-scrollbar,
@@ -468,6 +482,7 @@ class MediarrCard extends HTMLElement {
         .show-list::-webkit-scrollbar-track,
         .movie-list::-webkit-scrollbar-track,
         .plex-list::-webkit-scrollbar-track,
+        .jellyfin-list::-webkit-scrollbar-track,
         .trakt-list::-webkit-scrollbar-track,
         .tmdb-list::-webkit-scrollbar-track,
         .tmdb-airing-today-list::-webkit-scrollbar-track,
@@ -481,6 +496,7 @@ class MediarrCard extends HTMLElement {
         .show-list::-webkit-scrollbar-thumb,
         .movie-list::-webkit-scrollbar-thumb,
         .plex-list::-webkit-scrollbar-thumb,
+        .jellyfin-list::-webkit-scrollbar-thumb,
         .trakt-list::-webkit-scrollbar-thumb,
         .tmdb-list::-webkit-scrollbar-thumb,
         .tmdb-airing-today-list::-webkit-scrollbar-thumb,
@@ -641,6 +657,9 @@ class MediarrCard extends HTMLElement {
           font-size: 0.85em;
           opacity: 0.7;
         }
+      
+      
+        
       `;
       this.appendChild(style);
 
@@ -684,6 +703,21 @@ class MediarrCard extends HTMLElement {
         `;
       }).join('');
     }
+
+    const jellyfinEntity = hass.states[config.jellyfin_entity];
+      if (jellyfinEntity) {
+        const jellyfinItems = jellyfinEntity.attributes.data || [];
+        this.jellyfinList.innerHTML = jellyfinItems.map((item, index) => {
+          return `
+            <div class="media-item ${this.selectedType === 'jellyfin' && index === this.selectedIndex ? 'selected' : ''}"
+                 data-type="jellyfin"
+                 data-index="${index}">
+              <img src="${this._formatImageUrl(item.poster, 'jellyfin')}" alt="${item.title}">
+              <div class="media-item-title">${item.title}</div>
+            </div>
+          `;
+        }).join('');
+      }
 
     // Update Sonarr content
     const sonarrEntity = hass.states[config.sonarr_entity];
@@ -767,12 +801,17 @@ class MediarrCard extends HTMLElement {
             entity = plexEntity;
             mediaItem = entity.attributes.data[index];
             break;
+          
           case 'sonarr':
             entity = sonarrEntity;
             mediaItem = entity.attributes.data[index];
             break;
           case 'radarr':
             entity = radarrEntity;
+            mediaItem = entity.attributes.data[index];
+            break;
+          case 'jellyfin':
+            entity = jellyfinEntity;
             mediaItem = entity.attributes.data[index];
             break;
           case 'trakt':
@@ -814,13 +853,15 @@ class MediarrCard extends HTMLElement {
               `;
             }
         }
-        // Update background and info
-        if (mediaItem?.fanart) {
+        
+        
+        if (type === 'jellyfin' && mediaItem?.fanart) {
+          this.background.style.backgroundImage = `url('${this._formatImageUrl(mediaItem.fanart, 'jellyfin')}')`;
+          this.background.style.opacity = config.opacity || 0.7;
+        } else if (mediaItem?.fanart) {  // For other types that use fanart
           this.background.style.backgroundImage = `url('${mediaItem.fanart}')`;
           this.background.style.opacity = config.opacity || 0.7;
         }
-        
-        
         // Show play button only for Plex content
         if (type === 'plex') {
           this.playButton.classList.remove('hidden');
@@ -830,31 +871,58 @@ class MediarrCard extends HTMLElement {
 
         // Update info based on type
         if (type === 'plex') {
-          const addedDate = new Date(mediaItem.added).toLocaleDateString();
+          const addedDate = mediaItem.release !== 'Unknown' ? 
+            new Date(mediaItem.release).toLocaleDateString() : 
+            new Date(mediaItem.added || Date.now()).toLocaleDateString();
           const runtime = mediaItem.runtime ? `${mediaItem.runtime} min` : '';
-          const subtitle = mediaItem.type === 'show' ? `${mediaItem.number || ''} - ${mediaItem.episode || ''}` : '';
+          const subtitle = mediaItem.number ? `${mediaItem.number}${mediaItem.episode ? ` - ${mediaItem.episode}` : ''}` : '';
+          
+          this.info.innerHTML = `
+            <div class="title">${mediaItem.title}${mediaItem.year ? ` (${mediaItem.year})` : ''}</div>
+            ${subtitle ? `<div class="details">${subtitle}</div>` : ''}
+            <div class="metadata">Added: ${addedDate}${runtime ? ` | ${runtime}` : ''}</div>
+          `;
+        } else if (type === 'jellyfin') {
+          const addedDate = new Date(mediaItem.added || Date.now()).toLocaleDateString();
+          const runtime = mediaItem.runtime ? `${mediaItem.runtime} min` : '';
+          const subtitle = mediaItem.episode ? `${mediaItem.number || ''} - ${mediaItem.episode || ''}` : '';
           this.info.innerHTML = `
             <div class="title">${mediaItem.title}${mediaItem.year ? ` (${mediaItem.year})` : ''}</div>
             <div class="details">${subtitle}</div>
             <div class="metadata">Added: ${addedDate}${runtime ? ` | ${runtime}` : ''}</div>
           `;
         } else if (type === 'sonarr') {
-          const airDate = new Date(mediaItem.airdate).toLocaleDateString();
+          let airDate = '';
+          if (mediaItem.release && mediaItem.release !== 'Unknown') {
+            const date = new Date(mediaItem.release);
+            if (!isNaN(date.getTime())) {
+              airDate = date.toLocaleDateString();
+            }
+          }
+          
           this.info.innerHTML = `
             <div class="title">${mediaItem.title}</div>
-            <div class="details">${mediaItem.next_episode?.number || ''} - ${mediaItem.next_episode?.title || ''}</div>
+            <div class="details">${mediaItem.number || ''} - ${mediaItem.episode || ''}</div>
             <div class="metadata">Airs: ${airDate}${mediaItem.network ? ` on ${mediaItem.network}` : ''}</div>
           `;
         } else if (type === 'radarr') {
-          const releaseDate = new Date(mediaItem.releaseDate).toLocaleDateString();
+          let releaseDate = '';
+          if (mediaItem.release && !mediaItem.release.includes('Unknown')) {
+            const dateStr = mediaItem.release.split(' - ')[1] || mediaItem.release;
+            const date = new Date(dateStr);
+            if (!isNaN(date.getTime())) {
+              releaseDate = date.toLocaleDateString();
+            }
+          }
+          
           const runtime = mediaItem.runtime ? `${mediaItem.runtime} min` : '';
           this.info.innerHTML = `
-            <div class="title">${mediaItem.title} (${mediaItem.year || ''})</div>
-            <div class="details">${mediaItem.releaseType} Release</div>
+            <div class="title">${mediaItem.title}${mediaItem.year ? ` (${mediaItem.year})` : ''}</div>
+            <div class="details">${mediaItem.genres || ''}</div>
             <div class="metadata">${releaseDate}${runtime ? ` | ${runtime}` : ''}</div>
           `;
         }
-
+        
         // Update selected states
         this.querySelectorAll('.media-item').forEach(i => {
           i.classList.toggle('selected', 
@@ -874,8 +942,9 @@ class MediarrCard extends HTMLElement {
   }
   setConfig(config) {
     if (!config.sonarr_entity && !config.radarr_entity && !config.plex_entity && 
-      !config.trakt_entity && !config.tmdb_entity && !config.tmdb_airing_today_entity && 
-      !config.tmdb_now_playing_entity && !config.tmdb_on_air_entity && !config.tmdb_upcoming_entity) {
+      !config.jellyfin_entity && !config.trakt_entity && !config.tmdb_entity && 
+      !config.tmdb_airing_today_entity && !config.tmdb_now_playing_entity && 
+      !config.tmdb_on_air_entity && !config.tmdb_upcoming_entity) {
       throw new Error('Please define at least one media entity');
     }
     
@@ -883,17 +952,24 @@ class MediarrCard extends HTMLElement {
     this.config = { ...config };
     this._setSectionOrder(config);
     
-    // Store formatted plex url separately
+    // Store formatted URLs separately
     if (this.config.plex_url && !this.config.plex_url.endsWith('/')) {
       this._formattedPlexUrl = this.config.plex_url + '/';
     } else {
       this._formattedPlexUrl = this.config.plex_url;
     }
-  }
+
+    if (this.config.jellyfin_url && !this.config.jellyfin_url.endsWith('/')) {
+      this._formattedJellyfinUrl = this.config.jellyfin_url + '/';
+    } else {
+      this._formattedJellyfinUrl = this.config.jellyfin_url;
+    }
+}
 
   static getStubConfig() {
     return {
       plex_entity: 'sensor.plex_mediarr',
+      jellyfin_entity: 'sensor.jellyfin_mediarr',
       sonarr_entity: 'sensor.sonarr_mediarr',
       radarr_entity: 'sensor.radarr_mediarr',
       trakt_entity: 'sensor.trakt_mediarr',
@@ -905,6 +981,8 @@ class MediarrCard extends HTMLElement {
       media_player_entity: '',
       plex_url: '',
       plex_token: '',
+      jellyfin_url: '',
+      jellyfin_token: '',
       opacity: 0.7,
       blur_radius: 0
     };
