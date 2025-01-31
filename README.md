@@ -7,22 +7,32 @@ A comprehensive media management card and integration for Home Assistant that br
 
 ## Features
 
+Modular design
+ - add what you want
+ - collapsible sections
+ - dynamic backgrounds
+
 - **Media Server Integration**
   - Plex: View recently added content
-  - Coming Soon: Jellyfin and Emby support
-
+  - Jellyfin 
+  - Embt, sooon to come
+    
 - **Media Management**
   - Sonarr: View upcoming TV shows and episodes
   - Radarr: Track upcoming movie releases
+  - other arrs can easily be added
 
 - **Media Discovery**
+  - Overseer or Jellyseer: see requests
   - Trakt: Browse popular TV shows and movies
   - TMDB: Explore trending content (configurable for TV, movies, or both)
+ 
+- **Media player state**
+  - whats currenty playing on media_player.jf or plex (click to play coming soon)  
+   
 
 ## Screenshots
-
-
-![VIEW](https://github.com/user-attachments/assets/e5eda74d-e50b-4dde-9985-45282dc99a51)
+![Screenshot 2025-01-31 at 14-43-03 mediarr – Home Assistant](https://github.com/user-attachments/assets/ce041d96-d9a1-421b-8d34-2dc5194c2034)
 
 
 ![Screenshot 2025-01-21 at 14-51-50 mediarr – Home Assistant](https://github.com/user-attachments/assets/4c73b44a-680a-42ea-8d2b-0d96806fb1c6)
@@ -65,7 +75,19 @@ sensor:
       port: 32400
       token: your_plex_token
       max_items: 10
-    
+
+    jellyfin:  
+      host: localhost
+      port: 8096
+      token: your_jf_token
+      max_items: 10
+
+    seer:  # Optional
+      host: localhost
+      port: 5055
+      token: your_seer_token
+      max_items: 10
+
     sonarr:  # Optional
       url: http://localhost:8989
       api_key: your_sonarr_api_key
@@ -98,14 +120,15 @@ sensor:
 
    
 ### Step 2: Add the Card
-Add the card to your dashboard:  (may need to clear cache)
+Add the 1 or all to your card on your dashboard:  (may need to clear cache)
 
 ```yaml
 type: custom:mediarr-card
 plex_entity: sensor.plex_mediarr
+jellyfin_entity: sensor.jellyfin.mediarr
 sonarr_entity: sensor.sonarr_mediarr
 radarr_entity: sensor.radarr_mediarr
-
+seer_emtity: sendor.seer_mediarr
 trakt_entity: sensor.trakt_mediarr
 tmdb_entity: sensor.tmdb_mediarr
 
@@ -148,10 +171,9 @@ Note: Not all endpoints may be functional depending on the current implementatio
 
 ## Upcoming Features
 
-- Jellyfin and Emby support
-- Direct Plex playback functionality
-- Library status indicators for Trakt/TMDB content
-- Integration with Sonarr/Radarr for direct addition of new content
+- Emby support
+- playback functionality
+- who knows
 
 ## Contributors
 Vansmak aka Vanhacked
