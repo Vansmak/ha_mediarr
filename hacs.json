@@ -3,5 +3,7 @@
   "render_readme": true,
   "frontend_version": "2024.1.0",
   "homeassistant": "2024.1.0",
-  "filename": "mediarr-card.js"
+  "filename": "dist/main-card.js",
+  "content_in_root": false
+}ename": "mediarr-card.js"
 }
