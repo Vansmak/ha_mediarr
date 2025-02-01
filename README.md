@@ -53,7 +53,7 @@ Manual Installation (recommended for latest)
 
 2. Copy main.js, styles js and /sections folder  into:
 
-/config/www/community/mediarr_card/
+/config/www/community/mediarr-card/
 │── main.js
 │── styles.js
 │── sections/
@@ -71,7 +71,7 @@ Click "Add Resource"
 
 Enter the URL:
 
-/local/mediarr_card/main.js
+/local/mediarr-card/main.js
 
 Select "JavaScript Module"
 
@@ -97,7 +97,7 @@ Select Category: Lovelace) Dashboard
 
 5. Click "Add"
 
-6. Find and install "Mediarr_card" from HACS
+6. Find and install "Mediarr card" from HACS
 
 7. Restart Home Assistant
 
@@ -113,7 +113,7 @@ Step 2: Add the Card to Lovelace
 
 Add the following YAML to your dashboard:
 ```
-type: custom:mediarr_card #underscore
+type: custom:mediarr-card #underscore
 plex_entity: sensor.plex_mediarr
 jellyfin_entity: sensor.jellyfin_mediarr
 sonarr_entity: sensor.sonarr_mediarr
