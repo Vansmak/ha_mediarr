@@ -38,7 +38,7 @@ Modular design
 
 ![Screenshot 2025-01-21 at 14-51-50 mediarr – Home Assistant](https://github.com/user-attachments/assets/4c73b44a-680a-42ea-8d2b-0d96806fb1c6)
 
-## Installation
+## Installation  SEE MANUAL INSTALL FOR LATEST
 
 ### HACS Installation
 1. Open HACS
@@ -48,18 +48,19 @@ Modular design
 5. Click "Add"
 6. Find and install "Mediarr-card" from HACS
 7. Restart Home Assistant
-8. Add to Resources:
-   - Go to Settings -> Dashboards -> Resources
-   - Click "Add Resource"
-   - Enter URL: `/hacsfiles/mediarr-card/mediarr-card.js`
-   - Select "JavaScript Module"
-   - Click "Create"
+
 
 
 ### Manual Installation
 1. To Download the latest release thats not in hacs yet, v2.0 
 2. Copy all contents from `\dist` on this repo to `/config/custom_components/mediarr/`
-3. Add `/local/community/mediarr-card/main-card.js` to dashboard resources
+  
+3.  Add to Resources:
+   - Go to Settings -> Dashboards -> Resources
+   - Click "Add Resource"
+   - Enter URL: `/hacsfiles/mediarr-card/main-card.js`
+   - Select "JavaScript Module"
+   - Click "Create"
 4. Restart Home Assistant
 
 ## Configuration
