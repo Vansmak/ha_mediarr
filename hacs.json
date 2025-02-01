@@ -1,6 +1,6 @@
 {
   "name": "Mediarr Card",
-  "filename": "dist/main.js",
+  "filename": "dist/main-card.js",
   "type": "module",
   "render_readme": true,
   "domains": ["lovelace"],
