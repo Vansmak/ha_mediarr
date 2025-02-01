@@ -370,11 +370,11 @@ class MediarrCard extends HTMLElement {
   }
 }
 
-customElements.define('mediarr_card', MediarrCard);
+customElements.define('mediarr-card', MediarrCard);
 
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type: "mediarr_card",
+  type: "mediarr-card",
   name: "Mediarr Card",
   description: "A modular card for displaying media from various sources",
   preview: true
