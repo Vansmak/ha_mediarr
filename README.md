@@ -15,7 +15,7 @@ Modular design
 - **Media Server Integration**
   - Plex: View recently added content
   - Jellyfin 
-  - Embt, sooon to come
+  - Emby, soon to come
     
 - **Media Management**
   - Sonarr: View upcoming TV shows and episodes
