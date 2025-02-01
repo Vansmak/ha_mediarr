@@ -76,7 +76,7 @@ Manual Installation
 
 2. Copy all contents into:
 
-/config/www/community/mediarr-card/
+/config/www/community/mediarr_card/
 
 3. Add the resource:
 
@@ -86,7 +86,7 @@ Click "Add Resource"
 
 Enter the URL:
 
-/local/mediarr-card/main.js
+/local/mediarr_card/main.js
 
 Select "JavaScript Module"
 
@@ -104,7 +104,7 @@ Step 2: Add the Card to Lovelace
 
 Add the following YAML to your dashboard:
 ```
-type: custom:mediarr-card
+type: custom:mediarr_card #underscore
 plex_entity: sensor.plex_mediarr
 jellyfin_entity: sensor.jellyfin_mediarr
 sonarr_entity: sensor.sonarr_mediarr
