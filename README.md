@@ -86,7 +86,7 @@ Click "Add Resource"
 
 Enter the URL:
 
-/hacsfiles/mediarr-card/main.js
+/local/mediarr-card/main.js
 
 Select "JavaScript Module"
 
@@ -96,66 +96,14 @@ Click "Create"
 
 Configuration
 
-Step 1: Install the Mediarr Server
+Step 1: Install and configure the Mediarr Server sensors
 
 🔗 Mediarr Server Repository github.com/Vansmak/mediarr_server
 
-Step 2: Configure Sensors
-
-Add one or more of the following sensors to your configuration.yaml or sensors.yaml:
-
-sensor:
-  - platform: mediarr
-    plex:  
-      host: localhost
-      port: 32400
-      token: your_plex_token
-      max_items: 10
-
-    jellyfin:  
-      host: localhost
-      port: 8096
-      token: your_jf_token
-      max_items: 10
-
-    seer:  
-      host: localhost
-      port: 5055
-      token: your_seer_token
-      max_items: 10
-
-    sonarr:  
-      url: http://localhost:8989
-      api_key: your_sonarr_api_key
-      max_items: 10
-      days_to_check: 60
-    
-    radarr:  
-      url: http://localhost:7878
-      api_key: your_radarr_api_key
-      max_items: 10
-    
-    trakt:  
-      client_id: "your_client_id"
-      client_secret: "your_client_secret"
-      tmdb_api_key: "your_tmdb_api_key"
-      trending_type: both  # Options: movies, shows, both
-      max_items: 10
-     
-    tmdb:  
-      api_key: "your_api_key"
-      trending_type: all  # Options: movie, tv, all
-      max_items: 10
-      trending: true
-      now_playing: true
-      upcoming: true
-      on_air: true
-      airing_today: false
-
-Step 3: Add the Card to Lovelace
+Step 2: Add the Card to Lovelace
 
 Add the following YAML to your dashboard:
-
+```
 type: custom:mediarr-card
 plex_entity: sensor.plex_mediarr
 jellyfin_entity: sensor.jellyfin_mediarr
@@ -164,15 +112,18 @@ radarr_entity: sensor.radarr_mediarr
 seer_entity: sensor.seer_mediarr
 trakt_entity: sensor.trakt_mediarr
 tmdb_entity: sensor.tmdb_mediarr
-
+```
 # Optional TMDB lists
+```
 tmdb_now_playing_entity: sensor.tmdb_mediarr_now_playing
 tmdb_upcoming_entity: sensor.tmdb_mediarr_upcoming
 tmdb_on_air_entity: sensor.tmdb_mediarr_on_air
-
-# Optional media player for progress tracking
+```
+# Optional media player for
+progress tracking
+```
 media_player_entity: media_player.your_plex_player
-
+```
 **Options
 
 Sensor Configuration
