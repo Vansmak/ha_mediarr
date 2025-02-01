@@ -53,12 +53,12 @@ Modular design
 
 ### Manual Installation
 1. To Download the latest release thats not in hacs yet, v2.0 
-2. Copy all contents from `\dist` on this repo to `/config/custom_components/mediarr/`
+2. Copy all contents from `\dist` on this repo to `/config/www/community/mediarr-card/`
   
 3.  Add to Resources:
    - Go to Settings -> Dashboards -> Resources
    - Click "Add Resource"
-   - Enter URL: `/hacsfiles/mediarr-card/main-card.js`
+   - Enter URL: `/local/community/mediarr-card/main-card.js`
    - Select "JavaScript Module"
    - Click "Create"
 4. Restart Home Assistant
