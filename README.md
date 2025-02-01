@@ -57,9 +57,9 @@ Modular design
 
 
 ### Manual Installation
-1. Download the latest release
-2. Copy all contents from `custom_components/mediarr/` to `/config/custom_components/mediarr/`
-3. Copy `www/community/mediarr-card/mediarr-card.js` to `/config/www/community/mediarr-card/`
+1. To Download the latest release thats not in hacs yet, v2.0 
+2. Copy all contents from `\dist` on this repo to `/config/custom_components/mediarr/`
+3. Add `/local/community/mediarr-card/main-card.js` to dashboard resources
 4. Restart Home Assistant
 
 ## Configuration
