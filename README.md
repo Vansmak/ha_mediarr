@@ -47,7 +47,7 @@ Screenshots
 ![Screenshot 2025-01-21 at 14-51-50 mediarr – Home Assistant](https://github.com/user-attachments/assets/4c73b44a-680a-42ea-8d2b-0d96806fb1c6)
 
 **Installation 
-Manual Installation (recommended for latest)
+Manual Installation (hacs can be a pia)
 
 1. Download the latest release from this repository.
 
