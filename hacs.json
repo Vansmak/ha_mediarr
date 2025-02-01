@@ -1,8 +1,8 @@
 {
   "name": "Mediarr Card",
+  "filename": "main.js",
+  "type": "module",
   "render_readme": true,
-  "frontend_version": "2024.1.0",
-  "homeassistant": "2024.1.0",
-  "filename": "dist/main-card.js",
-  "content_in_root": false
+  "domains": ["lovelace"],
+  "country": "global"
 }
